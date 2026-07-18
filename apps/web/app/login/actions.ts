@@ -2,7 +2,17 @@
 
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
-import { createClient } from '../../utils/supabase/server'
+import { createClient } from '@/utils/supabase/server'
+
+export async function signOut() {
+  const supabase = await createClient()
+  
+  // This clears the Supabase session cookies
+  await supabase.auth.signOut()
+  
+  // Force a redirect back to the login page
+  redirect('/login')
+}
 
 export async function login(formData: FormData) {
   const supabase = await createClient()
@@ -16,28 +26,21 @@ export async function login(formData: FormData) {
   })
 
   if (error) {
-    redirect('/login?error=Could not authenticate user')
+    return "Could not authenticate user"
   }
 
-  revalidatePath('/', 'layout')
-  redirect('/')
+  // 2. Add this right here! If there is no error, go to the dashboard.
+  redirect('/dashboard')
 }
 
 export async function signup(formData: FormData) {
   const supabase = await createClient()
-  
-  const email = formData.get('email') as string
-  const password = formData.get('password') as string
-
-  const { error } = await supabase.auth.signUp({
-    email,
-    password,
-  })
+  // ... your existing signup logic ...
 
   if (error) {
-    redirect('/login?error=Could not create user')
+    return "Could not create user"
   }
 
-  revalidatePath('/', 'layout')
-  redirect('/')
+  // 3. Add this here too!
+  redirect('/dashboard') 
 }
