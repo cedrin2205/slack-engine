@@ -1,102 +1,76 @@
+// packages/database/prisma/schema.prisma
+
 generator client {
   provider = "prisma-client-js"
-  engineType = "binary"
 }
 
 datasource db {
   provider  = "postgresql"
-  url       = "postgresql://postgres.tvmnwszyzajwjmqbkqrr:F%24jtZJ9s%24%40.syKP@aws-0-ap-southeast-2.pooler.supabase.com:6543/postgres?pgbouncer=true"
-  directUrl = "postgresql://postgres:F%24jtZJ9s%24%40.syKP@db.tvmnwszyzajwjmqbkqrr.supabase.co:5432/postgres"
-}
-
-enum MemberRole {
-  ADMIN
-  MODERATOR
-  GUEST
-}
-
-enum ChannelType {
-  TEXT
-  AUDIO
-  VIDEO
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 model User {
   id        String   @id @default(uuid())
   email     String   @unique
-  name      String
-  imageUrl  String?
+  name      String?
+  avatarUrl String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  servers   Server[]  @relation("ServerOwner")
-  members   Member[]
+  // Relationships
   messages  Message[]
+  workspaces WorkspaceMember[]
 }
 
-model Server {
-  id         String   @id @default(uuid())
-  name       String
-  imageUrl   String?
-  inviteCode String   @unique @default(uuid())
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+model Workspace {
+  id        String   @id @default(uuid())
+  name      String
+  inviteCode String  @unique @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  profileId  String
-  user       User      @relation("ServerOwner", fields: [profileId], references: [id], onDelete: Cascade)
-
-  members    Member[]
-  channels   Channel[]
-
-  @@index([profileId])
+  // Relationships
+  channels  Channel[]
+  members   WorkspaceMember[]
 }
 
-model Member {
-  id        String     @id @default(uuid())
-  role      MemberRole @default(GUEST)
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
+// Join table for Many-to-Many relationship between Users and Workspaces
+model WorkspaceMember {
+  id          String   @id @default(uuid())
+  userId      String
+  workspaceId String
+  role        String   @default("MEMBER") // Could be "ADMIN" or "MEMBER"
+  joinedAt    DateTime @default(now())
 
-  userId    String
-  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
 
-  serverId  String
-  server    Server     @relation(fields: [serverId], references: [id], onDelete: Cascade)
-
-  @@unique([userId, serverId])
-  @@index([userId])
-  @@index([serverId])
+  // A user can only have one membership record per workspace
+  @@unique([userId, workspaceId])
 }
 
 model Channel {
-  id        String      @id @default(uuid())
-  name      String
-  type      ChannelType @default(TEXT)
-  createdAt DateTime    @default(now())
-  updatedAt DateTime    @updatedAt
+  id          String   @id @default(uuid())
+  name        String
+  workspaceId String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
-  serverId  String
-  server    Server      @relation(fields: [serverId], references: [id], onDelete: Cascade)
-
-  messages  Message[]
-
-  @@index([serverId])
+  // Relationships
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  messages    Message[]
 }
 
 model Message {
-  id        String   @id @default(cuid())
-  content   String   @db.Text
-  fileUrl   String?
-  deleted   Boolean  @default(false)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id          String   @id @default(uuid())
+  content     String   @db.Text
+  userId      String
+  channelId   String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  channelId String
-  channel   Channel  @relation(fields: [channelId], references: [id], onDelete: Cascade)
-
-  @@index([channelId])
-  @@index([userId])
+  // Relationships
+  user        User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  channel     Channel @relation(fields: [channelId], references: [id], onDelete: Cascade)
 }
