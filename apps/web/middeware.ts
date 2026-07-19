@@ -43,12 +43,28 @@ export async function middleware(request: NextRequest) {
 
   // Redirect unauthenticated users to login
   if (isProtectedRoute && !user) {
-    return NextResponse.redirect(new URL('/login', request.url))
+    const redirectUrl = new URL('/login', request.url)
+    const redirectResponse = NextResponse.redirect(redirectUrl)
+    
+    // CRITICAL: Copy the newly refreshed cookies over to the redirect!
+    response.cookies.getAll().forEach((cookie) => {
+      redirectResponse.cookies.set(cookie.name, cookie.value)
+    })
+    
+    return redirectResponse
   }
 
   // Redirect authenticated users away from login
   if (user && request.nextUrl.pathname === '/login') {
-    return NextResponse.redirect(new URL('/dashboard', request.url))
+    const redirectUrl = new URL('/dashboard', request.url)
+    const redirectResponse = NextResponse.redirect(redirectUrl)
+    
+    // CRITICAL: Copy the newly refreshed cookies over to the redirect!
+    response.cookies.getAll().forEach((cookie) => {
+      redirectResponse.cookies.set(cookie.name, cookie.value)
+    })
+    
+    return redirectResponse
   }
 
   return response

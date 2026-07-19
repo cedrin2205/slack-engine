@@ -7,70 +7,88 @@ generator client {
 datasource db {
   provider  = "postgresql"
   url       = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL")
+  directUrl = env("DIRECT_URL") // Recommended for Supabase connection pooling
 }
 
 model User {
-  id        String   @id @default(uuid())
+  id        String   @id // We will use the Supabase Auth UUID here
   email     String   @unique
   name      String?
   avatarUrl String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  // Relationships
-  messages  Message[]
-  workspaces WorkspaceMember[]
+  messages         Message[]
+  workspaceMembers WorkspaceMember[]
+  channelMembers   ChannelMember[]
 }
 
 model Workspace {
   id        String   @id @default(uuid())
   name      String
-  inviteCode String  @unique @default(uuid())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  // Relationships
-  channels  Channel[]
-  members   WorkspaceMember[]
+  channels Channel[]
+  members  WorkspaceMember[]
 }
 
-// Join table for Many-to-Many relationship between Users and Workspaces
+// Join table mapping Users to Workspaces
 model WorkspaceMember {
   id          String   @id @default(uuid())
-  userId      String
-  workspaceId String
-  role        String   @default("MEMBER") // Could be "ADMIN" or "MEMBER"
-  joinedAt    DateTime @default(now())
+  role        Role     @default(MEMBER)
+  createdAt   DateTime @default(now())
 
+  userId      String
   user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  workspaceId String
   workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
 
-  // A user can only have one membership record per workspace
-  @@unique([userId, workspaceId])
+  @@unique([userId, workspaceId]) // A user can only join a specific workspace once
 }
 
 model Channel {
   id          String   @id @default(uuid())
   name        String
-  workspaceId String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  // Relationships
+  workspaceId String
   workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
-  messages    Message[]
+
+  messages Message[]
+  members  ChannelMember[]
+}
+
+// Join table mapping Users to Channels
+model ChannelMember {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  channelId String
+  channel   Channel  @relation(fields: [channelId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, channelId])
 }
 
 model Message {
-  id          String   @id @default(uuid())
-  content     String   @db.Text
-  userId      String
-  channelId   String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id        String   @id @default(uuid())
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  // Relationships
-  user        User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  channel     Channel @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  channelId String
+  channel   Channel  @relation(fields: [channelId], references: [id], onDelete: Cascade)
+}
+
+enum Role {
+  ADMIN
+  MEMBER
 }
