@@ -35,9 +35,9 @@ model Workspace {
 
 // Join table mapping Users to Workspaces
 model WorkspaceMember {
-  id          String   @id @default(uuid())
-  role        Role     @default(MEMBER)
-  createdAt   DateTime @default(now())
+  id        String   @id @default(uuid())
+  role      Role     @default(MEMBER)
+  createdAt DateTime @default(now())
 
   userId      String
   user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -49,10 +49,10 @@ model WorkspaceMember {
 }
 
 model Channel {
-  id          String   @id @default(uuid())
-  name        String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id        String   @id @default(uuid())
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   workspaceId String
   workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
@@ -75,20 +75,26 @@ model ChannelMember {
   @@unique([userId, channelId])
 }
 
+enum Role {
+  ADMIN
+  MEMBER
+  GUEST
+}
+
 model Message {
-  id        String   @id @default(uuid())
+  id        String   @id @default(cuid())
   content   String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  // The user who sent the message
   userId    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
+  // The channel the message belongs to
   channelId String
   channel   Channel  @relation(fields: [channelId], references: [id], onDelete: Cascade)
-}
 
-enum Role {
-  ADMIN
-  MEMBER
+  @@index([channelId])
+  @@index([userId])
 }

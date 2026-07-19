@@ -35,12 +35,22 @@ export async function login(formData: FormData) {
 
 export async function signup(formData: FormData) {
   const supabase = await createClient()
-  // ... your existing signup logic ...
+  
+  // 1. Extract the email and password from the form
+  const email = formData.get('email') as string
+  const password = formData.get('password') as string
 
+  // 2. Call Supabase to create the new user and extract the 'error' variable
+  const { error } = await supabase.auth.signUp({
+    email,
+    password,
+  })
+
+  // 3. Now this error check will work perfectly!
   if (error) {
     return "Could not create user"
   }
 
-  // 3. Add this here too!
+  // 4. Redirect to the dashboard on success
   redirect('/dashboard') 
 }
