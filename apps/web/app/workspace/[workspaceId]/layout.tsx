@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import Sidebar from '@/components/Sidebar'
 import { createChannel } from './actions'
+import InviteButton from '@/components/InviteButton'
 
 export default async function WorkspaceLayout({
   children,
@@ -36,6 +37,8 @@ export default async function WorkspaceLayout({
       <aside className="w-64 bg-zinc-900/50 border-r border-zinc-800 flex flex-col">
         <div className="p-4 border-b border-zinc-800">
           <h2 className="font-bold text-lg truncate">{workspace.name}</h2>
+
+          <InviteButton workspaceId={workspace.id} />
         </div>
         
         <div className="p-4 flex-1 overflow-y-auto">
