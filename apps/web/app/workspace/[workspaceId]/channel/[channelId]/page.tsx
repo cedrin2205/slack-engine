@@ -2,6 +2,7 @@
 import { prisma } from '@/utils/prisma'
 import { notFound } from 'next/navigation'
 import { sendMessage } from './actions'
+import RealtimeChat from '@/components/RealtimeChat'
 
 export default async function ChannelPage({
   params
@@ -30,6 +31,9 @@ export default async function ChannelPage({
       <div className="p-4 border-b border-zinc-800 shrink-0 shadow-sm">
         <h1 className="font-bold text-xl tracking-tight"># {channel.name}</h1>
       </div>
+
+      {/* ---> INVISIBLE REALTIME LISTENER ADDED HERE <--- */}
+      <RealtimeChat channelId={channelId} />
 
       {/* 2. Message History Area */}
       <div className="flex-1 p-6 overflow-y-auto space-y-6">
