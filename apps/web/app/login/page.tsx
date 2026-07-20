@@ -44,8 +44,10 @@ export default async function LoginPage({
         )}
 
         <button
-          formAction={login}
-          className="rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 transition-colors"
+          formAction={async (formData) => {
+            await login(formData);
+          }}
+        className="rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 transition-colors"
         >
           Log In
         </button>

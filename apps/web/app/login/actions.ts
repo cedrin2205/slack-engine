@@ -25,9 +25,9 @@ export async function login(formData: FormData) {
     password,
   })
 
-  if (error) {
-    return "Could not authenticate user"
-  }
+ if (error) {
+  redirect('/login?message=Could not authenticate user')
+}
 
   // 2. Add this right here! If there is no error, go to the dashboard.
   redirect('/dashboard')
