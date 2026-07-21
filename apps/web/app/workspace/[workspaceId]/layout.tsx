@@ -46,7 +46,7 @@ export default async function WorkspaceLayout({
             Channels
           </h3>
           <ul className="space-y-1 mb-6">
-            {workspace.channels.map((channel) => (
+            {workspace.channels.map((channel: any) => (
               <li key={channel.id}>
                 <Link 
                   href={`/workspace/${workspace.id}/channel/${channel.id}`}
