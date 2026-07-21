@@ -1,4 +1,3 @@
-// apps/web/app/workspace/[workspaceId]/channel/[channelId]/page.tsx
 import { prisma } from '@/utils/prisma'
 import { notFound } from 'next/navigation'
 import { sendMessage } from './actions'
