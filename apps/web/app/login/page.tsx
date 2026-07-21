@@ -45,6 +45,7 @@ export default async function LoginPage({
 
         <button
           formAction={async (formData) => {
+            "use server";
             await login(formData);
           }}
         className="rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 transition-colors"
@@ -53,6 +54,7 @@ export default async function LoginPage({
         </button>
         <button
   formAction={async (formData) => {
+    "use server";
     await signup(formData);
   }}
   className="rounded-md border border-gray-300 px-4 py-2 text-gray-700 hover:bg-gray-50 transition-colors"
