@@ -52,11 +52,13 @@ export default async function LoginPage({
           Log In
         </button>
         <button
-          formAction={signup}
-          className="rounded-md border border-gray-300 px-4 py-2 text-gray-700 hover:bg-gray-50 transition-colors"
-        >
-          Sign Up
-        </button>
+  formAction={async (formData) => {
+    await signup(formData);
+  }}
+  className="rounded-md border border-gray-300 px-4 py-2 text-gray-700 hover:bg-gray-50 transition-colors"
+>
+  Sign Up
+</button>
       </form>
     </div>
   )
