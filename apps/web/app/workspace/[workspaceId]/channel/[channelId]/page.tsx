@@ -46,7 +46,7 @@ export default async function ChannelPage({
             <p className="text-sm mt-1">This is the start of the channel. Be the first to say hello.</p>
           </div>
         ) : (
-          channel.messages.map((message) => (
+          channel.messages.map((message: any) => (
             <div key={message.id} className="flex flex-col group">
               <div className="flex items-baseline space-x-2">
                 <span className="font-bold text-[15px] text-zinc-100">
