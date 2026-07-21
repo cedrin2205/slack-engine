@@ -33,7 +33,7 @@ export default async function Sidebar() {
       
       {/* 1. Workspaces Container (Wrapped in flex-1 to push the user menu down) */}
       <div className="flex flex-col items-center space-y-4 flex-1 w-full overflow-y-auto no-scrollbar">
-        {userMemberships.map((membership) => {
+        {userMemberships.map((membership: any) => {
           const ws = membership.workspace
           // Grab the first two letters for the square icon
           const initials = ws.name.substring(0, 2).toUpperCase()
