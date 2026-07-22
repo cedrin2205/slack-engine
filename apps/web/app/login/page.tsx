@@ -3,7 +3,7 @@ import { login, signup } from './actions'
 export default async function LoginPage({
   searchParams,
 }: {
-  searchParams: { error: string }
+  searchParams: { message: string }
 }) {
   // Await searchParams for Next.js 16 compatibility
   const params = await searchParams;
@@ -37,9 +37,10 @@ export default async function LoginPage({
           required
         />
         
-        {params?.error && (
+        {/* This will now display the exact error message from Supabase */}
+        {params?.message && (
           <p className="mt-4 bg-red-100 p-3 text-center text-sm text-red-500 rounded-md">
-            {params.error}
+            {params.message}
           </p>
         )}
 
@@ -48,19 +49,19 @@ export default async function LoginPage({
             "use server";
             await login(formData);
           }}
-        className="rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 transition-colors"
+          className="rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 transition-colors"
         >
           Log In
         </button>
         <button
-  formAction={async (formData) => {
-    "use server";
-    await signup(formData);
-  }}
-  className="rounded-md border border-gray-300 px-4 py-2 text-gray-700 hover:bg-gray-50 transition-colors"
->
-  Sign Up
-</button>
+          formAction={async (formData) => {
+            "use server";
+            await signup(formData);
+          }}
+          className="rounded-md border border-gray-300 px-4 py-2 text-gray-700 hover:bg-gray-50 transition-colors"
+        >
+          Sign Up
+        </button>
       </form>
     </div>
   )
