@@ -25,11 +25,11 @@ export async function login(formData: FormData) {
     password,
   })
 
- if (error) {
-  redirect('/login?message=Could not authenticate user')
-}
+  if (error) {
+    redirect('/login?message=Could not authenticate user')
+  }
 
-  // 2. Add this right here! If there is no error, go to the dashboard.
+  // If there is no error, go to the dashboard.
   redirect('/dashboard')
 }
 
@@ -40,15 +40,15 @@ export async function signup(formData: FormData) {
   const email = formData.get('email') as string
   const password = formData.get('password') as string
 
-  // 2. Call Supabase to create the new user and extract the 'error' variable
+  // 2. Call Supabase to create the new user
   const { error } = await supabase.auth.signUp({
     email,
     password,
   })
 
-  // 3. Now this error check will work perfectly!
+  // 3. Catch the exact error and redirect back to the login page with it
   if (error) {
-    return "Could not create user"
+    redirect(`/login?message=${error.message}`)
   }
 
   // 4. Redirect to the dashboard on success
