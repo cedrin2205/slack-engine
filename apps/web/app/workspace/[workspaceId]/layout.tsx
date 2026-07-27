@@ -39,8 +39,9 @@ export default async function WorkspaceLayout({
         workspaceName={workspace.name}
         channels={workspace.channels}
         createChannel={createChannel}
+        inviteButton={<InviteButton workspaceId={workspace.id} />}
       >
-        <InviteButton workspaceId={workspace.id} />
+        {children}
       </ChannelSidebar>
     </div>
   )

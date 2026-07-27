@@ -14,12 +14,14 @@ export default function ChannelSidebar({
   workspaceName,
   channels,
   createChannel,
+  inviteButton,
   children,
 }: {
   workspaceId: string
   workspaceName: string
   channels: Channel[]
   createChannel: (formData: FormData) => void | Promise<void>
+  inviteButton: React.ReactNode
   children: React.ReactNode
 }) {
   const [isOpen, setIsOpen] = useState(false)
@@ -95,7 +97,7 @@ export default function ChannelSidebar({
             </button>
           </div>
           {/* Invite Button Slot */}
-          {children}
+          {inviteButton}
         </div>
 
         <div className="p-4 flex-1 overflow-y-auto custom-scrollbar">
