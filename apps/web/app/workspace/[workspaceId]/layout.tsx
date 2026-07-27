@@ -4,7 +4,6 @@ import { notFound } from 'next/navigation'
 import Sidebar from '@/components/Sidebar'
 import ChannelSidebar from '@/components/ChannelSidebar'
 import InviteButton from '@/components/InviteButton'
-import { createChannel } from './actions'
 
 export default async function WorkspaceLayout({
   children,
@@ -38,7 +37,6 @@ export default async function WorkspaceLayout({
         workspaceId={workspace.id}
         workspaceName={workspace.name}
         channels={workspace.channels}
-        createChannel={createChannel}
         inviteButton={<InviteButton workspaceId={workspace.id} />}
       >
         {children}

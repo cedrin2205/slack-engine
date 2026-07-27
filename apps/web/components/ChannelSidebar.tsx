@@ -13,26 +13,22 @@ export default function ChannelSidebar({
   workspaceId,
   workspaceName,
   channels,
-  createChannel,
   inviteButton,
   children,
 }: {
   workspaceId: string
   workspaceName: string
   channels: Channel[]
-  createChannel: (formData: FormData) => void | Promise<void>
-  inviteButton: React.ReactNode
+  inviteButton?: React.ReactNode
   children: React.ReactNode
 }) {
   const [isOpen, setIsOpen] = useState(false)
   const pathname = usePathname()
 
-  // Close sidebar on route change (channel navigation)
   useEffect(() => {
     setIsOpen(false)
   }, [pathname])
 
-  // Close on Escape key
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
       if (e.key === 'Escape') setIsOpen(false)
@@ -41,7 +37,6 @@ export default function ChannelSidebar({
     return () => document.removeEventListener('keydown', handleKeyDown)
   }, [])
 
-  // Prevent body scroll when mobile sidebar is open
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden'
@@ -55,7 +50,7 @@ export default function ChannelSidebar({
 
   return (
     <div className="flex flex-1 min-w-0 relative">
-      {/* Mobile / Tablet Toggle Button */}
+      {/* Mobile toggle button */}
       <button
         onClick={() => setIsOpen(true)}
         className="lg:hidden fixed top-4 left-[84px] z-20 w-9 h-9 bg-zinc-900 border border-zinc-700 rounded-lg flex items-center justify-center text-zinc-400 hover:text-white hover:bg-zinc-800 transition-all duration-200 shadow-md hover:shadow-lg"
@@ -66,7 +61,7 @@ export default function ChannelSidebar({
         </svg>
       </button>
 
-      {/* Overlay backdrop - visible on mobile and tablet */}
+      {/* Overlay backdrop */}
       {isOpen && (
         <div
           className="fixed inset-0 z-40 overlay-backdrop lg:hidden"
@@ -74,19 +69,16 @@ export default function ChannelSidebar({
         />
       )}
 
-      {/* Channel Sidebar - responsive */}
+      {/* Channel Sidebar */}
       <aside
-        className={`
-          fixed lg:static inset-y-0 left-[72px] z-50 w-72 bg-zinc-900/95 lg:bg-zinc-900/50 border-r border-zinc-800 flex flex-col
-          sidebar-transition
-          ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
-          lg:flex
-        `}
+        className={[
+          'fixed lg:static inset-y-0 left-[72px] z-50 w-72 bg-zinc-900/95 lg:bg-zinc-900/50 border-r border-zinc-800 flex flex-col sidebar-transition',
+          isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0',
+        ].join(' ')}
       >
         <div className="p-4 border-b border-zinc-800">
           <div className="flex items-center justify-between">
             <h2 className="font-bold text-lg truncate text-white">{workspaceName}</h2>
-            {/* Close button - mobile/tablet only */}
             <button
               onClick={() => setIsOpen(false)}
               className="lg:hidden w-8 h-8 flex items-center justify-center rounded-lg hover:bg-zinc-800 text-zinc-400 hover:text-white transition-colors"
@@ -96,7 +88,6 @@ export default function ChannelSidebar({
               </svg>
             </button>
           </div>
-          {/* Invite Button Slot */}
           {inviteButton}
         </div>
 
@@ -128,36 +119,10 @@ export default function ChannelSidebar({
             ))}
             {channels.length === 0 && (
               <li className="text-sm text-zinc-600 px-3 py-4 text-center italic">
-                No channels yet — create one below
+                No channels yet
               </li>
             )}
           </ul>
-
-          {/* Create Channel Form */}
-          <div className="border-t border-zinc-800 pt-4 mt-2">
-            <h4 className="text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-3">
-              Create Channel
-            </h4>
-            <form action={createChannel} className="space-y-2">
-              <input type="hidden" name="workspaceId" value={workspaceId} />
-              <div className="relative">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-600 text-sm font-mono">#</span>
-                <input
-                  type="text"
-                  name="name"
-                  placeholder="new-channel"
-                  className="w-full pl-7 pr-3 py-2 text-sm rounded-lg bg-zinc-950 border border-zinc-700 text-white placeholder-zinc-600 focus:outline-none focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500 transition-all"
-                  required
-                />
-              </div>
-              <button
-                type="submit"
-                className="w-full bg-zinc-800 hover:bg-zinc-700 text-white text-sm py-2 rounded-lg transition-all duration-200 font-medium hover:shadow-md active:scale-[0.98]"
-              >
-                + Add Channel
-              </button>
-            </form>
-          </div>
         </div>
       </aside>
 
@@ -168,4 +133,3 @@ export default function ChannelSidebar({
     </div>
   )
 }
-
