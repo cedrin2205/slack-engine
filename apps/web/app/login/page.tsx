@@ -62,7 +62,7 @@ function AuthForm() {
               type="email"
               required
               disabled={isLoading}
-              className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-black focus:border-transparent transition-all disabled:opacity-50 disabled:bg-gray-100 outline-none"
+              className="w-full px-4 py-3 text-gray-900 placeholder-gray-400 bg-white rounded-lg border border-gray-200 focus:ring-2 focus:ring-black focus:border-transparent transition-all disabled:opacity-50 disabled:bg-gray-100 outline-none"
               placeholder="name@company.com"
             />
           </div>
@@ -77,7 +77,7 @@ function AuthForm() {
               type="password"
               required
               disabled={isLoading}
-              className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-black focus:border-transparent transition-all disabled:opacity-50 disabled:bg-gray-100 outline-none"
+              className="w-full px-4 py-3 text-gray-900 placeholder-gray-400 bg-white rounded-lg border border-gray-200 focus:ring-2 focus:ring-black focus:border-transparent transition-all disabled:opacity-50 disabled:bg-gray-100 outline-none"
               placeholder="••••••••"
             />
           </div>
