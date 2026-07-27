@@ -29,38 +29,44 @@ export default async function Sidebar() {
   })
 
   return (
-    <nav className="w-[72px] flex-shrink-0 bg-zinc-950 border-r border-zinc-800 flex flex-col items-center py-4">
+    <nav className="w-[72px] flex-shrink-0 bg-zinc-950 border-r border-zinc-800 flex flex-col items-center py-4 z-30 relative">
       
-      {/* 1. Workspaces Container (Wrapped in flex-1 to push the user menu down) */}
-      <div className="flex flex-col items-center space-y-4 flex-1 w-full overflow-y-auto no-scrollbar">
+      {/* 1. Workspaces Container */}
+      <div className="flex flex-col items-center space-y-3 flex-1 w-full overflow-y-auto no-scrollbar px-2">
         {userMemberships.map((membership: any) => {
           const ws = membership.workspace
-          // Grab the first two letters for the square icon
           const initials = ws.name.substring(0, 2).toUpperCase()
           
           return (
             <Link 
               key={ws.id} 
               href={`/workspace/${ws.id}`}
-              className="w-12 h-12 shrink-0 bg-zinc-800 hover:bg-zinc-700 text-white rounded-xl flex items-center justify-center font-bold text-lg transition-all shadow-sm"
+              className="group relative w-12 h-12 shrink-0 bg-zinc-800 hover:bg-zinc-700 text-white rounded-xl flex items-center justify-center font-bold text-lg transition-all duration-200 shadow-sm hover:shadow-md hover:scale-105 active:scale-95"
               title={ws.name}
             >
               {initials}
+              {/* Tooltip on hover */}
+              <span className="absolute left-full ml-3 px-2.5 py-1 bg-zinc-800 text-white text-xs rounded-md shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap border border-zinc-700">
+                {ws.name}
+              </span>
             </Link>
           )
         })}
         
-        {/* 2. Button to go back to Dashboard to create more workspaces */}
+        {/* Button to go to Dashboard */}
         <Link 
           href="/dashboard"
-          className="w-12 h-12 shrink-0 border-2 border-dashed border-zinc-700 hover:border-zinc-500 hover:bg-zinc-900 text-zinc-500 hover:text-white rounded-xl flex items-center justify-center font-bold text-2xl transition-all"
+          className="group relative w-12 h-12 shrink-0 border-2 border-dashed border-zinc-700 hover:border-zinc-500 hover:bg-zinc-900 text-zinc-500 hover:text-white rounded-xl flex items-center justify-center font-bold text-2xl transition-all duration-200 hover:scale-105 active:scale-95"
           title="Add Workspace"
         >
           +
+          <span className="absolute left-full ml-3 px-2.5 py-1 bg-zinc-800 text-white text-xs rounded-md shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap border border-zinc-700">
+            New Workspace
+          </span>
         </Link>
       </div>
 
-      {/* 3. The new User Menu sitting perfectly at the bottom */}
+      {/* User Menu at the bottom */}
       <UserMenu email={user.email!} name={dbUser?.name} />
       
     </nav>

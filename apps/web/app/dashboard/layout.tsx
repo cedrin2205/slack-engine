@@ -1,4 +1,3 @@
-// apps/web/app/dashboard/layout.tsx
 import Sidebar from '@/components/Sidebar'
 
 export default function DashboardLayout({
@@ -7,12 +6,16 @@ export default function DashboardLayout({
   children: React.ReactNode
 }) {
   return (
-    <div className="flex h-screen bg-zinc-950 text-white overflow-hidden">
-      {/* 1. This keeps the Global Sidebar on the screen! */}
+    <div className="flex h-screen bg-zinc-950 text-white overflow-hidden selection:bg-zinc-700">
+      {/* Sidebar Container: You may need to add 'hidden md:flex' inside the Sidebar component itself later */}
       <Sidebar />
       
-      {/* 2. The Create form will render inside here */}
-      <main className="flex-1 flex flex-col min-w-0 bg-zinc-950">
+      {/* 
+        Main Content: 
+        Uses w-full to ensure it takes 100% of mobile screens. 
+        min-w-0 prevents flexbox overflowing issues.
+      */}
+      <main className="flex-1 flex flex-col min-w-0 w-full bg-zinc-950 relative h-full">
         {children}
       </main>
     </div>
