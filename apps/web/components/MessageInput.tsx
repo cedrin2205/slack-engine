@@ -7,21 +7,27 @@ export default function MessageInput({
   channelId,
   workspaceId,
   sendMessage,
+  onMessageSent,
 }: {
   channelName: string
   channelId: string
   workspaceId: string
   sendMessage: (formData: FormData) => void | Promise<void>
+  onMessageSent?: (content: string) => void
 }) {
   const [isPending, setIsPending] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
 
   const handleSubmit = async (formData: FormData) => {
     setIsPending(true)
+    const content = formData.get('content') as string
     try {
       await sendMessage(formData)
       if (inputRef.current) {
         inputRef.current.value = ''
+      }
+      if (content && onMessageSent) {
+        onMessageSent(content)
       }
     } finally {
       setIsPending(false)
@@ -36,7 +42,7 @@ export default function MessageInput({
         ref={inputRef}
         type="text"
         name="content"
-        placeholder={`Message #${channelName}`}
+        placeholder={'Message #' + channelName}
         disabled={isPending}
         className="w-full bg-zinc-900 border border-zinc-700 rounded-xl pl-4 pr-24 py-3.5 text-zinc-100 placeholder-zinc-500 focus:outline-none focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500 transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
         required
@@ -62,4 +68,3 @@ export default function MessageInput({
     </form>
   )
 }
-
