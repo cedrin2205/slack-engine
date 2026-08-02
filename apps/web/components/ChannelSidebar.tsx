@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { createChannel } from '@/app/workspace/[workspaceId]/actions'
 
 interface Channel {
   id: string
@@ -119,10 +120,36 @@ export default function ChannelSidebar({
             ))}
             {channels.length === 0 && (
               <li className="text-sm text-zinc-600 px-3 py-4 text-center italic">
-                No channels yet
+                No channels yet — create one below
               </li>
             )}
           </ul>
+
+          {/* Create Channel Form */}
+          <div className="border-t border-zinc-800 pt-4 mt-2">
+            <h4 className="text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-3">
+              Create Channel
+            </h4>
+            <form action={createChannel} className="space-y-2">
+              <input type="hidden" name="workspaceId" value={workspaceId} />
+              <div className="relative">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-600 text-sm font-mono">#</span>
+                <input
+                  type="text"
+                  name="name"
+                  placeholder="new-channel"
+                  className="w-full pl-7 pr-3 py-2 text-sm rounded-lg bg-zinc-950 border border-zinc-700 text-white placeholder-zinc-600 focus:outline-none focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500 transition-all"
+                  required
+                />
+              </div>
+              <button
+                type="submit"
+                className="w-full bg-zinc-800 hover:bg-zinc-700 text-white text-sm py-2 rounded-lg transition-all duration-200 font-medium hover:shadow-md active:scale-[0.98]"
+              >
+                + Add Channel
+              </button>
+            </form>
+          </div>
         </div>
       </aside>
 
